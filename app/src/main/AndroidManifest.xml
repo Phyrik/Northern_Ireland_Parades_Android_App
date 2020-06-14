@@ -8,9 +8,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/drum_launcher"
         android:label="@string/icon_caption"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/drum_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ParadeDetailsActivity"></activity>
