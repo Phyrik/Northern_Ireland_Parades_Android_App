@@ -1,7 +1,19 @@
 <resources>
     <string name="app_name">Northern Ireland Parades</string>
-    <string name="icon_caption">Parades</string>
+    <string name="icon_caption">NI Parades</string>
     <string name="upcoming_parades">Upcoming Parades</string>
+    <string name="advanced_search">Advanced search</string>
     <string name="view_on_parades_commission_website_button_text">View on Parades Commission website</string>
     <string name="add_to_calendar_button_text">Add to calendar</string>
+    <string name="credits_action_button_text">Credits</string>
+    <string name="advanced_search_button_text">Advanced search</string>
+    <string name="advanced_search_action_bar_title">NI Parades - Advanced Search</string>
+    <string name="main_search_hint">Search for a parade</string>
+    <string name="org_type_spinner_text_view_text">Organisation type:</string>
+    <string name="go">Go</string>
+    <string name="search_results">Search results</string>
+    <string name="advanced_search_results_action_bar_title">NI Parades - Advanced Search Results</string>
+    <string name="no_items_found">No items found</string>
+
+    <string name="credits_line_1">App launcher icon made by Freepik from www.flaticon.com</string>
 </resources>

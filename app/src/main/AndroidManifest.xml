@@ -13,13 +13,21 @@
         android:roundIcon="@mipmap/drum_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ParadeDetailsActivity"></activity>
+        <activity android:name=".AdvancedSearchResultsActivity"></activity>
+        <activity android:name=".AdvancedSearchActivity" />
+        <activity android:name=".CreditsActivity" />
+        <activity android:name=".ParadeDetailsActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
     </application>
 

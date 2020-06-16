@@ -1,7 +1,11 @@
 package com.crumble.buchanan.northernirelandparades
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.Response
@@ -14,13 +18,36 @@ import org.joda.time.format.DateTimeFormat
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    private var paradesList = mutableListOf<Parade>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         title = getString(R.string.app_name)
+
+        advancedSearchButton.setOnClickListener {
+            val intent = Intent(this, AdvancedSearchActivity::class.java)
+            startActivity(intent)
+        }
+
+        upcomingParadesSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit (query: String): Boolean {
+                paradesNormalSearch(false, query)
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (newText == "") {
+                    paradesNormalSearch(true)
+                }
+                return false
+            }
+        })
 
         upcomingParadesRecyclerView.layoutManager = LinearLayoutManager(this)
         upcomingParadesRecyclerView.adapter = null
@@ -30,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         fun makeParadesXMLRequest() {
             val stringRequest =
-                StringRequest(Request.Method.GET, url, Response.Listener<String> { response ->
+                StringRequest(Request.Method.GET, url, Response.Listener { response ->
                     paradeXmlResponseReceived(response)
                 }, Response.ErrorListener { error ->
                     println(error)
@@ -44,6 +71,34 @@ class MainActivity : AppCompatActivity() {
         makeParadesXMLRequest()
     }
 
+    private fun paradesNormalSearch(reset: Boolean, query: String = "") {
+        if (reset) {
+            upcomingParadesRecyclerView.adapter = ParadeRecyclerViewAdapter(paradesList, false)
+            return
+        }
+
+        val filteredParadesList = paradesList.filter { p -> p.title.toLowerCase(Locale.ROOT).contains(query) }
+        upcomingParadesRecyclerView.adapter = ParadeRecyclerViewAdapter(filteredParadesList, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val mi = menuInflater
+        mi.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_credits -> {
+            val intent = Intent(this, CreditsActivity::class.java)
+            startActivity(intent)
+            true
+        }
+
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun paradeXmlResponseReceived(response: String?) {
         val factory = XmlPullParserFactory.newInstance()
         val xpp = factory.newPullParser()
@@ -52,17 +107,14 @@ class MainActivity : AppCompatActivity() {
         var eventType = xpp.eventType
 
         var currentTag = ""
-        var paradesList = mutableListOf<Parade>()
         var currentParade: Parade? = null
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_DOCUMENT) {
-                println("Start document");
+                println("Started parsing")
             } else if (eventType == XmlPullParser.START_TAG) {
-                println("Start tag " + xpp.name);
                 currentTag = xpp.name
             } else if (eventType == XmlPullParser.END_TAG) {
-                println("End tag " + xpp.name);
                 if (currentTag == "description") {
                     if (currentParade != null) {
                         paradesList.add(currentParade)
@@ -70,7 +122,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 currentTag = ""
             } else if (eventType == XmlPullParser.TEXT) {
-                println("Text " + xpp.text);
                 if (currentTag == "title" && !xpp.text.contains("RSS")) {
                     currentParade = Parade(xpp.text)
                 }
@@ -78,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                     val currentLocalDate = LocalDate()
                     val paradeDate = DateTimeFormat.forPattern("dd/MM/yyyy").parseLocalDate(xpp.text.substring(0, 10) as String?)
                     val daysTillParade = Days.daysBetween(currentLocalDate, paradeDate).days
-                    currentParade?.dateText = xpp.text.substring(0, 10) as String
+                    currentParade?.dateText = xpp.text.substring(0, 10)
                     currentParade?.fullDateText = "Date: " + xpp.text.substring(0, 10) + " (" + daysTillParade + " days from today)"
                 }
                 if (currentTag == "outwardroute") {
@@ -100,11 +151,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         println("Initialising RecyclerView with data...")
-        upcomingParadesRecyclerView.adapter = MainAdapter(paradesList)
+        upcomingParadesRecyclerView.adapter = ParadeRecyclerViewAdapter(paradesList, false)
     }
 }
 
 class Parade(val title: String) {
+
+    var advancedSearchOrigin = false
 
     var location = ""
     var fullLocationText = ""

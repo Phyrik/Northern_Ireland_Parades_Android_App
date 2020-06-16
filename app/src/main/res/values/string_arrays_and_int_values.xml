@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="org_types_array">
+        <item>Any</item>
+        <item>Apprentice Boys of Derry</item>
+        <item>Orange Order</item>
+        <item>Royal Black Institution</item>
+        <item>Loyalist Band</item>
+        <item>Nationalist Band</item>
+        <item>Military Bands</item>
+        <item>Ancient Order of Hibernians</item>
+        <item>Boys Brigade, Girls Brigade, etc.</item>
+        <item>Flag Protest/Parade</item>
+    </string-array>
+    <integer-array name="org_types_array_int">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>7</item>
+        <item>9</item>
+        <item>10</item>
+        <item>21</item>
+        <item>35</item>
+        <item>38</item>
+        <item>43</item>
+    </integer-array>
+
+    <string-array name="advanced_search_url_args">
+        <item>ot</item>
+    </string-array>
+</resources>
